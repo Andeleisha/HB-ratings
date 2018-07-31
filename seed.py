@@ -50,6 +50,10 @@ def load_movies():
 
         title = stuff[:-1]
 
+        title = " ".join(title)
+
+        # title = title.rstrip()
+
         if release_str:
             released_at = datetime.strptime(release_str, "%d-%b-%Y")
         else:
