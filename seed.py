@@ -2,8 +2,8 @@
 
 from sqlalchemy import func
 from model import User
-# from model import Rating
-# from model import Movie
+from model import Rating
+from model import Movie
 
 from model import connect_to_db, db
 from server import app
@@ -43,12 +43,12 @@ def load_movies():
 
     for row in open("seed_data/u.item"):
         row = row.rstrip()
-        movie_id, title, release_str, video_release_date, 
-        imdb_url, unknown_genre, action, adventure, animation, childrens,
-        comedy, crime, documentary, drama, fantasy, film_noir, horror, musical, 
-        mystery, romance, sci_fi, thriller, war, western = row.split("|")
+        # row_data = row.split("|")
+        movie_id, title, release_str, video_release_date, imdb_url, unknown_genre, action, adventure, animation, childrens, comedy, crime, documentary, drama, fantasy, film_noir, horror, musical, mystery, romance, sci_fi, thriller, war, western = row.split("|")
 
-        movie_id.rstrip("(%)")
+        stuff = title.split(" ")
+
+        title = stuff[:-1]
 
         if release_str:
             released_at = datetime.strptime(release_str, "%d-%b-%Y")
@@ -60,6 +60,7 @@ def load_movies():
                         released_at=released_at,
                         imdb_url=imdb_url)
         db.session.add(movie)
+    
     db.session.commit()
 
 
@@ -71,7 +72,16 @@ def load_ratings():
 
     for row in open("seed_data/u.data"):
         row = row.rstrip()
-        rating_id, movie_id
+        # rating_id, movie_id, user_id, score = row.split()
+
+        user_id, movie_id, score, timestamp = row.split()
+
+        rating = Rating(movie_id=movie_id, 
+                        user_id=user_id,
+                        score=score)
+        db.session.add(rating)
+
+    db.session.commit()
 
 
 
