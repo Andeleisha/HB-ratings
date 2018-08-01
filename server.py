@@ -32,20 +32,42 @@ def user_list():
     return render_template("user_list.html", users=users)
 
 
-@app.route('/register', methods="GET")
+@app.route('/register', methods=["GET"])
 def register_form():
     """Show the register form"""
 
     return render_template("register_form.html")
 
-@app.route('/register', methods="POST")
+@app.route('/register', methods=["POST"])
 def register_process():
 
     #Get the info
     #Create a user in the DB, store it
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    #queryDB for email
+    #if email in DB and PW matches, return redirect login
+    #else - create account, add to DB
+
+    match = User.query.filter_by(email=email).first()
+
+    if match == None:
+        user = User(email=email,
+                    password=password)
+        db.session.add(user)
+        db.session.commit()
+        return redirect("/")
+    elif match.email == email:
+        if match.password == password:
+            return redirect("/login")
+        else:
+            flash("That password is incorrect")
+            return redirect("/register")
 
 
-    return redirect('/')
+        
+    
 
 
 
