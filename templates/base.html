@@ -1,13 +1,49 @@
 <!doctype html>
 <html>
 <head>
-  <title>Ratings</title>
+  <title>TITLE GOES HERE</title>
 </head>
 
 <body>
-  Ratings
-  <hr>
+	<a href="/login"><button id=login>Log In</button></a>
+	<form action='/logout' method="POST">
+	<input type="submit" value="Log Out">
 
+</form> 
+
+
+
+
+
+  <!-- <button id=login>Log In</button> -->
+
+  <!-- if user not in session - button says "log in" and redirects to login page -->
+  <!-- if user in session, button says "log out" and clicking removes the user from session and changes button text to log in -->
+
+<!-- <script>
+  function checkLoginStatus(evt){
+  	if ("user" in session) {
+  		console.log("The user is in the session" + { session["user"] });
+  		delete session["user"];
+  		console.log("The user has been deletd")
+  		flash("You have been logged out.");
+  		// return redirect('/');
+  	} else {
+  		return redirect('/login')
+  	}
+  }
+
+
+  $("#login").click(checkLoginStatus);
+
+</script>
+ -->
+  <hr>
+  <ul>
+  	{% for message in get_flashed_messages() %}
+  	<li>{{ message }}</li>
+  	{% endfor %}
+  </ul>
   {% block content %} put your content here {% endblock %}
 
 </body>

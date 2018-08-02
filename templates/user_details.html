@@ -1,0 +1,28 @@
+<!-- Make a page that shows information about a particular user, like:
+
+their age
+their zipcode
+the list of movies they rated and the scores for each rating
+Make sure the user_list.html template you already made sends the site user to the right page for the user they clicked on.
+
+Change the login process route to redirect users to their user page when they log in. -->
+
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>User details</h1>
+{{ user.email }}
+<br>
+User ID:({{ user.user_id }})
+<br>
+Age:{{ user.age }} 
+<br>
+Zipcode: {{ user.zipcode }}
+
+<ul>
+{% for movie in user.ratings %}
+<li> {{ movie.movie_id }} Score: {{ movie.score }} </li>
+{% endfor %}
+</ul>
+
+{% endblock %}

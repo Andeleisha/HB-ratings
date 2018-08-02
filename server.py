@@ -65,6 +65,79 @@ def register_process():
             flash("That password is incorrect")
             return redirect("/register")
 
+@app.route('/login', methods=["GET"])
+def login_form():
+    """Serves login form"""
+
+    return render_template("login_form.html")
+
+@app.route('/login', methods=["POST"])
+def login():
+    """Logs a user in if they provide the correct email and password"""
+
+    #Check if email is in DB
+    #   If it is, check if the password is correct
+    #       If it is, log the user in
+            # add the user ID to the flask SESSION
+            # redirect to homepage, flash logged in
+        #If PW not correct, flash message
+    #If email not in DB, redirect to register
+
+    #Add a login/logout button to base template 
+    #Change text depending on if userID is in session
+    #Links to login/logout page
+    #Flashes logged in/logged out?
+
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    match = User.query.filter_by(email=email).first()
+
+    if match == None:
+        flash("That user does not exist. Please create a new account.")
+        return redirect("/register")
+    elif match.email == email:
+        if match.password == password:
+            session["user"] = match.user_id
+            print("The user's ID in the session is: {}".format(session["user"]))
+            flash("You are now logged in.")
+            return redirect("/")
+        else:
+            flash("That password is incorrect.")
+            return redirect("/login")
+
+@app.route('/logout', methods=["POST"])
+def logout():
+    """Logs a user out"""
+
+    #Check if the user is in the session
+    #If yes, remove from session, redirect to home, flash message
+    #If no, redirect to login page?
+    if "user" in session:
+        del session["user"]
+        flash("You are logged out.")
+        return redirect('/')
+    else:
+        flash("You are not logged in.")
+        return redirect('/login')
+
+@app.route("/user-detail/<user_id>")
+def user_details(user_id):
+    """Shows user info"""
+
+    # user_id = request.args.get("user_id")
+
+    user = User.query.filter_by(user_id=user_id).first()
+
+    return render_template("user_details.html", user=user)
+
+
+
+
+
+
+
+
 
         
     
