@@ -101,7 +101,7 @@ def login():
             session["user"] = match.user_id
             print("The user's ID in the session is: {}".format(session["user"]))
             flash("You are now logged in.")
-            return redirect("/")
+            return redirect("/user-detail/" + str(match.user_id))
         else:
             flash("That password is incorrect.")
             return redirect("/login")
@@ -110,7 +110,7 @@ def login():
 def logout():
     """Logs a user out"""
 
-    #Check if the user is in the session
+    #Check if the user is in the session87
     #If yes, remove from session, redirect to home, flash message
     #If no, redirect to login page?
     if "user" in session:
@@ -131,10 +131,50 @@ def user_details(user_id):
 
     return render_template("user_details.html", user=user)
 
+@app.route("/movies")
+def movie_list():
+    """Shows list of movies"""
+
+    movies = Movie.query.all()
+
+    return render_template("movie_list.html", movies=movies)
 
 
+@app.route("/movie-detail/<movie_id>")
+def movie_detail(movie_id):
+    """Show details about a movie"""
 
+    movie = Movie.query.filter_by(movie_id=movie_id).first()
 
+    return render_template("movie_details.html", movie=movie)
+
+@app.route("/rate-movie", methods=["POST"])
+def rate_movie():
+    """Handle the user rating """
+
+    rating = request.form.get("rating")
+    movie_id = request.form.get("movie_id")
+
+    rating = int(rating)
+
+    if "user" in session:
+        user_id = session["user"]
+        user = User.query.filter_by(user_id=user_id).first()
+        newRating = Rating(movie_id=movie_id,
+                        user_id=user_id,
+                        score=rating)
+        if Rating.query.filter_by(user_id=user_id, movie_id=movie_id).first() == None:
+            db.session.add(newRating)
+            db.session.commit()
+            return redirect("/")
+        else:
+            oldRating = Rating.query.filter_by(user_id=user_id, movie_id=movie_id).first()
+            oldRating.score = rating
+            db.session.commit()
+            return redirect("/")
+    else:
+        flash("You must be logged in to rate a movie.")
+        return redirect("/login")
 
 
 
